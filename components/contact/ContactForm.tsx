@@ -15,7 +15,7 @@ export default function ContactForm() {
     };
 
     return (
-        <div className="bg-background border rounded-[2rem] p-8 md:p-12 shadow-xl shadow-black/5 relative overflow-hidden">
+        <div className="bg-background border rounded-[1rem] p-4 md:p-12 shadow-xl shadow-black/5 relative overflow-hidden">
             <AnimatePresence mode="wait">
                 {!submitted ? (
                     <motion.form
@@ -26,11 +26,11 @@ export default function ContactForm() {
                         <div className="grid md:grid-cols-2 gap-6">
                             <div className="space-y-2">
                                 <label className="text-sm font-semibold">Full Name</label>
-                                <Input placeholder="John Doe" required className="rounded-xl h-12" />
+                                <Input placeholder="Your Name..." required className="rounded-xl h-12" />
                             </div>
                             <div className="space-y-2">
                                 <label className="text-sm font-semibold">Email Address</label>
-                                <Input type="email" placeholder="john@example.com" required className="rounded-xl h-12" />
+                                <Input type="email" placeholder="email@example.com" required className="rounded-xl h-12" />
                             </div>
                         </div>
                         <div className="space-y-2">
