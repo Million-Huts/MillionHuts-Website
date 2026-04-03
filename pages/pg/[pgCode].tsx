@@ -13,11 +13,16 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function PGInfoPage() {
-    const { pgCode } = useParams();
+    const params = useParams();
+
+    const pgCode = params?.pgCode as string;
+
     const [pg, setPg] = useState<PGDetails | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        if (!pgCode) return;
+
         const fetchDetails = async () => {
             try {
                 const res = await api.get(`/pgs/${pgCode}`);
