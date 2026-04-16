@@ -93,7 +93,7 @@ export default function PGInfoPage() {
 
                         {/* Quick Specs */}
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                            <SpecCard icon={<Clock size={20} />} label="Notice Period" value={`${pg.details.noticePeriod} Days`} />
+                            <SpecCard icon={<Clock size={20} />} label="Notice Period" value={`${pg.details.noticePeriod !== null ? pg.details.noticePeriod + "Days" : "Not Specified"}`} />
                             <SpecCard icon={<Utensils size={20} />} label="Mess" value={pg.details.messAvailable ? pg.details.messType || 'Available' : 'N/A'} />
                             <SpecCard icon={<ShieldCheck size={20} />} label="Verified" value="Govt Regd." />
                             <SpecCard icon={<Zap size={20} />} label="Rent Cycle" value={`${pg.details.rentCycleDay}th / Month`} />

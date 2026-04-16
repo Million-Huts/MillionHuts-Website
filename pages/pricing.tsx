@@ -1,16 +1,49 @@
+"use client"
+
 import Head from "next/head";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import PricingHero from "@/components/pricing/PricingHero";
 import PricingGrid from "@/components/pricing/PricingGrid";
 import PricingComparison from "@/components/pricing/PricingComparison";
 import PricingExtraInfo from "@/components/pricing/PricingExtraInfo";
 import FinalCTA from "@/components/home/FinalCTA";
+import { Plan } from "@/interfaces/pricing";
+import { api } from "@/lib/api";
 
 export default function PricingPage() {
-    const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">(
-        "monthly"
-    );
+    const [billingCycle, setBillingCycle] = useState<"MONTHLY" | "YEARLY">("MONTHLY");
+    const [plans, setPlans] = useState<Plan[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchPlans = async () => {
+            setIsLoading(true);
+            try {
+                // Fetching with interval query as requested
+                const response = await api.get("/plans", {
+                    params: {
+                        interval: billingCycle,
+                        limit: "10", // reasonable limit for pricing display
+                        page: "1"
+                    }
+                });
+
+                // API returns { data: Plan[] }
+                const planData = response.data?.data
+                setPlans(planData);
+                setError(null);
+            } catch (err) {
+                console.error("Failed to load plans:", err);
+                setError("Failed to load pricing plans. Please try again later.");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchPlans();
+    }, [billingCycle]);
 
     return (
         <>
@@ -146,10 +179,15 @@ export default function PricingPage() {
                 />
 
                 {/* 2. PRICING GRID */}
-                <PricingGrid billingCycle={billingCycle} />
+                <PricingGrid
+                    plans={plans}
+                    isLoading={isLoading}
+                    error={error}
+                    billingCycle={billingCycle}
+                />
 
-                {/* 3. COMPARISON TABLE */}
-                <PricingComparison />
+                {/* 3. COMPARISON TABLE - Best to pass all plans here for the columns */}
+                <PricingComparison plans={plans} />
 
                 {/* 4. EXTRA INFO */}
                 <PricingExtraInfo />

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ChevronDown, Building2, Users, Home, LogIn } from 'lucide-react';
+import { Menu, X, ChevronDown, Building2, Home, LogIn, Search, FileText } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
@@ -18,31 +18,15 @@ const navigation = [
     { name: 'Home', href: '/' },
     { name: 'Features', href: '/features' },
     { name: 'Pricing', href: '/pricing' },
-    {
-        name: 'For Owners',
-        href: '/owners',
-        dropdown: [
-            { name: 'Owner Dashboard', href: '/owners', description: 'Manage your properties' },
-            { name: 'Owner Resources', href: '/blog?category=owners', description: 'Tips & guides' },
-        ],
-    },
-    {
-        name: "PG's",
-        href: '/pg',
-        dropdown: [
-            { name: "All PG's", href: '/pg', description: 'Browse all listings' },
-            { name: 'Popular Cities', href: '/cities', description: 'Find PG in your city' },
-            { name: 'Student Specials', href: '/pg?type=student', description: 'Near universities' },
-        ],
-    },
+    { name: 'PG', href: '/pg' },
     { name: 'Blog', href: '/blog' },
     { name: 'Contact', href: '/contact' },
+    { name: 'Docs', href: '/docs' },
 ];
 
 export function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
-    const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
     const router = useRouter();
 
     useEffect(() => {
@@ -53,14 +37,36 @@ export function Navbar() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    // Close mobile menu on route change
+    // Close mobile menu on route change and prevent body scroll
     useEffect(() => {
         setIsOpen(false);
-        setActiveDropdown(null);
+        if (isOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
     }, [router.pathname]);
 
+    // Check if link is active
+    const isActive = (href: string) => {
+        if (href === '/') {
+            return router.pathname === href;
+        }
+        return router.pathname.startsWith(href);
+    };
+
+    // Underline animation variants
+    const underlineVariants = {
+        initial: { width: 0 },
+        animate: { width: '100%' },
+        exit: { width: 0 }
+    };
+
     return (
-        <nav className={`glass z-50 ${scrolled ? 'shadow-soft' : ''}`}>
+        <nav className={`glass fixed top-0 w-full z-50 ${scrolled ? 'shadow-soft' : ''}`}>
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="flex h-16 justify-between items-center">
                     {/* Logo */}
@@ -76,92 +82,91 @@ export function Navbar() {
                     {/* Desktop Navigation */}
                     <div className="hidden md:flex md:items-center md:space-x-1">
                         {navigation.map((item) => (
-                            <div key={item.name} className="relative">
-                                {item.dropdown ? (
-                                    <DropdownMenu
-                                        open={activeDropdown === item.name}
-                                        onOpenChange={(open) => setActiveDropdown(open ? item.name : null)}
-                                    >
-                                        <DropdownMenuTrigger asChild>
-                                            <Button
-                                                variant="ghost"
-                                                className={`flex items-center space-x-1 px-3 py-2 text-sm font-medium transition-colors
-                          ${router.pathname === item.href
-                                                        ? 'text-primary'
-                                                        : 'text-foreground/70 hover:text-primary'
-                                                    }`}
-                                            >
-                                                <span>{item.name}</span>
-                                                <ChevronDown className="h-4 w-4" />
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent align="center" className="w-56">
-                                            {item.dropdown.map((dropdownItem) => (
-                                                <DropdownMenuItem key={dropdownItem.href} asChild>
-                                                    <Link
-                                                        href={dropdownItem.href}
-                                                        className="flex flex-col items-start p-2"
-                                                    >
-                                                        <span className="font-medium">{dropdownItem.name}</span>
-                                                        <span className="text-xs text-muted-foreground">
-                                                            {dropdownItem.description}
-                                                        </span>
-                                                    </Link>
-                                                </DropdownMenuItem>
-                                            ))}
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
-                                ) : (
-                                    <Link
-                                        href={item.href}
-                                        className={`inline-flex px-3 py-2 text-sm font-medium transition-colors rounded-md
-                      ${router.pathname === item.href
-                                                ? 'text-primary bg-primary/10'
-                                                : 'text-foreground/70 hover:text-primary hover:bg-primary/5'
-                                            }`}
-                                    >
-                                        {item.name}
-                                    </Link>
-                                )}
-                            </div>
+                            <Link
+                                key={item.name}
+                                href={item.href}
+                                className="relative inline-flex px-3 py-2 text-sm font-medium transition-colors rounded-md group"
+                            >
+                                <span className={`relative ${isActive(item.href)
+                                    ? 'text-primary'
+                                    : 'text-foreground/70 group-hover:text-primary'
+                                    }`}>
+                                    {item.name}
+                                    {/* Active link underline */}
+                                    {isActive(item.href) && (
+                                        <motion.span
+                                            layoutId="active-underline"
+                                            className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary"
+                                            initial={{ width: 0 }}
+                                            animate={{ width: '100%' }}
+                                            transition={{ duration: 0.3 }}
+                                        />
+                                    )}
+                                    {/* Hover underline for non-active links */}
+                                    {!isActive(item.href) && (
+                                        <motion.span
+                                            className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
+                                            initial={{ width: 0 }}
+                                            whileHover={{ width: '100%' }}
+                                            transition={{ duration: 0.3 }}
+                                        />
+                                    )}
+                                </span>
+                            </Link>
                         ))}
+
+                        {/* Search Button */}
+                        <Button variant="ghost" size="icon" className="ml-2">
+                            <Search className="h-4 w-4" />
+                        </Button>
                     </div>
 
                     {/* Right side actions */}
-                    <div className="hidden md:flex md:items-center md:space-x-2">
+                    {/* Right side actions */}
+                    <div className="hidden md:flex md:items-center md:space-x-4">
                         <ThemeToggle />
 
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="outline" className="flex items-center space-x-2">
-                                    <Users className="h-4 w-4" />
+                                <Button variant="ghost" className="font-semibold gap-2 hover:bg-primary/5 transition-all">
+                                    <LogIn className="h-4 w-4 text-primary" />
                                     <span>Login</span>
-                                    <ChevronDown className="h-4 w-4" />
+                                    <ChevronDown className="h-3 w-3 opacity-50" />
                                 </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                                <DropdownMenuItem asChild>
-                                    <a href="https://tenant.millionhuts.com" target='_blank' className="flex items-center space-x-2">
-                                        <Home className="h-4 w-4" />
-                                        <span>Tenant Login</span>
+                            <DropdownMenuContent align="end" className="w-64 p-2 mt-2 rounded-xl shadow-xl border-border/50 glass">
+                                <DropdownMenuItem asChild className="rounded-lg cursor-pointer focus:bg-primary/5 p-3">
+                                    <a href="https://tenant.millionhuts.com" target='_blank' className="flex items-start gap-3">
+                                        <div className="p-2 bg-blue-500/10 rounded-md">
+                                            <Home className="h-4 w-4 text-blue-500" />
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <span className="font-bold text-sm">Tenant Portal</span>
+                                            <span className="text-[10px] text-muted-foreground leading-tight">Pay rent, view receipts & raise tickets</span>
+                                        </div>
                                     </a>
                                 </DropdownMenuItem>
-                                <DropdownMenuItem asChild>
-                                    <a href="https://app.millionhuts.com" target='_blank' className="flex items-center space-x-2">
-                                        <Building2 className="h-4 w-4" />
-                                        <span>Owner Login</span>
+
+                                <DropdownMenuItem asChild className="rounded-lg cursor-pointer focus:bg-primary/5 p-3">
+                                    <a href="https://app.millionhuts.com" target='_blank' className="flex items-start gap-3">
+                                        <div className="p-2 bg-primary/10 rounded-md">
+                                            <Building2 className="h-4 w-4 text-primary" />
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <span className="font-bold text-sm">PG Owner Portal</span>
+                                            <span className="text-[10px] text-muted-foreground leading-tight">Manage properties, tenants & analytics</span>
+                                        </div>
                                     </a>
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
-
-                        <Button className="bg-primary hover:bg-primary/90">
-                            Get Started
-                        </Button>
                     </div>
 
                     {/* Mobile menu button */}
                     <div className="flex items-center space-x-2 md:hidden">
+                        <Button variant="ghost" size="icon">
+                            <Search className="h-4 w-4" />
+                        </Button>
                         <ThemeToggle />
                         <Button
                             variant="ghost"
@@ -193,64 +198,56 @@ export function Navbar() {
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
                         transition={{ duration: 0.3 }}
-                        className="md:hidden overflow-hidden border-t border-border"
+                        className="md:hidden overflow-y-auto border-t border-border"
+                        style={{ maxHeight: 'calc(100vh - 64px)' }}
                     >
                         <div className="space-y-1 px-4 pb-3 pt-2">
                             {navigation.map((item) => (
-                                <div key={item.name}>
-                                    {item.dropdown ? (
-                                        <div className="space-y-1">
-                                            <div className="px-3 py-2 text-sm font-medium text-foreground/70">
-                                                {item.name}
-                                            </div>
-                                            <div className="ml-4 space-y-1 border-l-2 border-primary/20 pl-2">
-                                                {item.dropdown.map((dropdownItem) => (
-                                                    <Link
-                                                        key={dropdownItem.href}
-                                                        href={dropdownItem.href}
-                                                        className="block px-3 py-2 text-sm hover:text-primary transition-colors rounded-md hover:bg-primary/5"
-                                                    >
-                                                        <div className="font-medium">{dropdownItem.name}</div>
-                                                        <div className="text-xs text-muted-foreground">
-                                                            {dropdownItem.description}
-                                                        </div>
-                                                    </Link>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    ) : (
-                                        <Link
-                                            href={item.href}
-                                            className={`block px-3 py-2 text-sm font-medium rounded-md transition-colors
-                        ${router.pathname === item.href
-                                                    ? 'text-primary bg-primary/10'
-                                                    : 'text-foreground/70 hover:text-primary hover:bg-primary/5'
-                                                }`}
-                                        >
-                                            {item.name}
-                                        </Link>
-                                    )}
-                                </div>
+                                <Link
+                                    key={item.name}
+                                    href={item.href}
+                                    className={`relative block px-3 py-2 text-sm font-medium rounded-md transition-colors
+                                        ${isActive(item.href)
+                                            ? 'text-primary bg-primary/10'
+                                            : 'text-foreground/70 hover:text-primary hover:bg-primary/5'
+                                        }`}
+                                    onClick={() => setIsOpen(false)}
+                                >
+                                    <span className="relative inline-block">
+                                        {item.name}
+                                        {isActive(item.href) && (
+                                            <motion.span
+                                                className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
+                                                initial={{ width: 0 }}
+                                                animate={{ width: '100%' }}
+                                                transition={{ duration: 0.3 }}
+                                            />
+                                        )}
+                                    </span>
+                                </Link>
                             ))}
 
-                            {/* Mobile auth buttons */}
-                            <div className="pt-4 space-y-2 border-t border-border">
-                                <a href="https://tenant.millionhuts.com" target='_blank'>
-                                    <Button variant="outline" className="w-full justify-start">
-                                        <Home className="mr-2 h-4 w-4" />
-                                        Tenant Login
-                                    </Button>
-                                </a>
-                                <a href="https://app.millionhuts.com" target='_blank'>
-                                    <Button variant="outline" className="w-full justify-start">
-                                        <Building2 className="mr-2 h-4 w-4" />
-                                        Owner Login
-                                    </Button>
-                                </a>
-                                <Button className="w-full bg-primary hover:bg-primary/90">
-                                    <LogIn className="mr-2 h-4 w-4" />
-                                    Get Started
-                                </Button>
+                            {/* Mobile auth portals */}
+                            <div className="pt-6 mt-4 space-y-4 border-t border-border/50">
+                                <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground px-2">Access Portals</p>
+
+                                <div className="grid grid-cols-2 gap-3">
+                                    <a href="https://tenant.millionhuts.com" target='_blank'
+                                        className="flex flex-col items-center justify-center p-4 rounded-2xl bg-secondary/50 border border-border/40 active:scale-95 transition-all">
+                                        <div className="p-3 bg-blue-500/10 rounded-xl mb-2">
+                                            <Home className="h-6 w-6 text-blue-500" />
+                                        </div>
+                                        <span className="text-xs font-bold">Tenant</span>
+                                    </a>
+
+                                    <a href="https://app.millionhuts.com" target='_blank'
+                                        className="flex flex-col items-center justify-center p-4 rounded-2xl bg-secondary/50 border border-border/40 active:scale-95 transition-all">
+                                        <div className="p-3 bg-primary/10 rounded-xl mb-2">
+                                            <Building2 className="h-6 w-6 text-primary" />
+                                        </div>
+                                        <span className="text-xs font-bold">Owner</span>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </motion.div>
