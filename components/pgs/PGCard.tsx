@@ -1,83 +1,129 @@
-// components/pg/PGCard.tsx
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { MapPin, Star, Zap, Utensils, ArrowRight } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { MapPin, Utensils, ArrowRight, ShieldCheck, Waves, Wifi, Wind, Info } from "lucide-react";
+import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { PublicPG } from "@/interfaces/public-pg";
 
-interface PGCardProps {
-    pg: PublicPG;
-    index?: number;
-}
+// Mapping icons to common amenity slugs for visual flair
+const AMENITY_ICONS: Record<string, any> = {
+    "wi-fi": Wifi,
+    "air-conditioning": Wind,
+    "ro-water": Waves,
+    "cctv-surveillance": ShieldCheck,
+};
 
-export function PGCard({ pg, index = 0 }: PGCardProps) {
+export function PGCard({ pg, index = 0 }: { pg: any; index?: number }) {
+    const amenitiesToShow = pg.amenities?.slice(0, 4) || [];
+    const remainingCount = (pg.amenities?.length || 0) - amenitiesToShow.length;
+
     return (
         <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.4, delay: index * 0.05 }}
+            className="w-full mb-6"
         >
-            <Card className="group border-none shadow-none hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 overflow-hidden bg-card">
-                <div className="relative aspect-[16/10] overflow-hidden bg-muted">
-                    <img
-                        src={pg.coverImage || "/images/placeholder-pg.jpg"}
-                        alt={pg.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                    />
+            <Link href={`/pg/${pg.pgCode}`}>
+                <Card className="group flex flex-col md:flex-row overflow-hidden border-none shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all duration-500 cursor-pointer bg-white min-h-[280px]">
 
-                    {/* Badges Overlay */}
-                    <div className="absolute top-4 left-4 flex gap-2">
-                        <Badge className="bg-white/90 text-black hover:bg-white flex gap-1 items-center backdrop-blur-sm border-none font-bold">
-                            <Zap className="h-3 w-3 fill-primary text-primary" />
-                            {pg.pgType}
-                        </Badge>
-                        {pg.messAvailable && (
-                            <Badge className="bg-primary text-white border-none font-bold">
-                                <Utensils className="h-3 w-3 mr-1" /> Mess
-                            </Badge>
-                        )}
-                    </div>
+                    {/* LEFT: Image Section (Flex-1 on Desktop) */}
+                    <div className="relative w-full md:flex-1 overflow-hidden bg-muted aspect-video md:aspect-auto">
+                        <img
+                            src={pg.coverImage || "/images/placeholder-pg.jpg"}
+                            alt={pg.name}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                        />
 
-                    {/* Rent Overlay */}
-                    <div className="absolute bottom-4 left-4">
-                        <div className="bg-black/60 backdrop-blur-md text-white px-4 py-2 rounded-xl border border-white/20">
-                            <span className="text-lg font-bold">₹{pg.rentStart?.toLocaleString()}</span>
-                            <span className="text-xs opacity-80"> onwards</span>
+                        {/* Type Badges */}
+                        <div className="absolute top-4 left-4 flex flex-col gap-2">
+                            {pg.pgType && (
+                                <Badge className="w-fit bg-black/70 backdrop-blur-md text-white border-none font-black px-3 py-1 text-[10px] tracking-widest uppercase">
+                                    {pg.pgType}
+                                </Badge>
+                            )}
+                            {pg.messAvailable && (
+                                <Badge className="w-fit bg-primary text-white border-none font-black px-3 py-1 text-[10px] tracking-widest uppercase shadow-lg">
+                                    <Utensils className="h-3 w-3 mr-1" /> Mess Inc.
+                                </Badge>
+                            )}
                         </div>
-                    </div>
-                </div>
 
-                <CardContent className="p-4">
-                    <div className="flex justify-between items-center mb-2">
-                        <h3 className="text-lg font-bold group-hover:text-primary transition-colors truncate pr-4">
-                            {pg.name}
-                        </h3>
-                        <div className="flex items-center gap-1.5 bg-primary/5 px-2 py-0.5 rounded-lg shrink-0">
-                            <Star className="h-3.5 w-3.5 fill-primary text-primary" />
-                            <span className="font-bold text-xs">4.5</span>
+                        {/* Rent Overlay (Mobile Only) */}
+                        <div className="absolute bottom-4 left-4 md:hidden">
+                            <div className="bg-white px-3 py-1.5 rounded-lg shadow-xl border font-bold text-sm">
+                                ₹{pg.rentStart || "N/A"}+
+                            </div>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-2 text-muted-foreground mb-4">
-                        <MapPin className="h-4 w-4 text-primary shrink-0" />
-                        <span className="text-xs truncate">{pg.city}, {pg.state}</span>
-                    </div>
+                    {/* RIGHT: Details Section (Flex-2 on Desktop) */}
+                    <div className="flex-[2] p-6 md:p-8 flex flex-col justify-between">
+                        <div className="space-y-4">
+                            {/* Header */}
+                            <div className="flex justify-between items-start">
+                                <div>
+                                    <h3 className="text-2xl md:text-3xl font-black tracking-tighter group-hover:text-primary transition-colors leading-none mb-2">
+                                        {pg.name}
+                                    </h3>
+                                    <p className="flex items-center gap-1.5 text-muted-foreground text-sm font-medium italic">
+                                        <MapPin className="h-4 w-4 text-primary" />
+                                        {pg.locality && `${pg.locality}, `}{pg.city}, {pg.state}
+                                    </p>
+                                </div>
+                                <div className="hidden md:block text-right">
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-50">Monthly Rent</p>
+                                    <p className="text-2xl font-black text-primary leading-none">
+                                        ₹{pg.rentStart || "—"}
+                                        <span className="text-xs text-muted-foreground font-medium"> / mo</span>
+                                    </p>
+                                </div>
+                            </div>
 
-                    <div className="flex items-center justify-between pt-3 border-t border-dashed">
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                            ID: {pg.pgCode}
-                        </span>
-                        <Link href={`/pg/${pg.pgCode}`}>
-                            <Button variant="link" className="p-0 h-auto font-bold text-primary text-sm group/link">
-                                View Details
-                                <ArrowRight className="ml-1 h-3 w-3 group-hover/link:translate-x-1 transition-transform" />
+                            {/* Address (Desktop Only) */}
+                            <p className="hidden md:block text-sm text-slate-500 font-medium max-w-xl line-clamp-1">
+                                {pg.address}
+                            </p>
+
+                            {/* Amenities (Desktop Only) */}
+                            <div className="hidden md:flex flex-wrap gap-2 pt-2">
+                                {amenitiesToShow.map((item: any) => {
+                                    const Icon = AMENITY_ICONS[item.amenity.slug] || Info;
+                                    return (
+                                        <Badge
+                                            key={item.id}
+                                            variant="secondary"
+                                            className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-1.5 rounded-xl border-none gap-2 flex items-center"
+                                        >
+                                            <Icon className="h-3.5 w-3.5" />
+                                            {item.amenity.name}
+                                        </Badge>
+                                    );
+                                })}
+                                {remainingCount > 0 && (
+                                    <Badge variant="outline" className="font-bold px-3 py-1.5 rounded-xl border-dashed border-2">
+                                        +{remainingCount} More
+                                    </Badge>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Footer Section */}
+                        <div className="flex items-center justify-between mt-6 pt-6 border-t border-slate-100">
+                            <div className="flex gap-4">
+                                <div className="flex flex-col">
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">PG Code</span>
+                                    <span className="text-xs font-bold font-mono">{pg.pgCode}</span>
+                                </div>
+                            </div>
+
+                            <Button className="rounded-xl font-bold gap-2 px-6 h-11 shadow-lg shadow-primary/20">
+                                View Property <ArrowRight className="h-4 w-4" />
                             </Button>
-                        </Link>
+                        </div>
                     </div>
-                </CardContent>
-            </Card>
+                </Card>
+            </Link>
         </motion.div>
     );
 }
