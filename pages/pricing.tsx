@@ -191,9 +191,6 @@ export default function PricingPage() {
 
                 {/* 4. EXTRA INFO */}
                 <PricingExtraInfo />
-
-                {/* 5. FINAL CTA */}
-                <FinalCTA />
             </div>
         </>
     );

@@ -118,13 +118,16 @@ export default function Home() {
 
 
             <div className="flex flex-col min-h-screen">
-                <HeroSection />
-                <FeaturedSection />
-                <HowItWorks />
-                <Why />
-                <Testimonials />
-                <OwnerCTA />
-                <FinalCTA />
+
+                <main className="relative z-10">
+
+                    <HeroSection />
+                    <FeaturedSection />
+                    <HowItWorks />
+                    <Why />
+                    <Testimonials />
+                    <FinalCTA />
+                </main>
             </div>
         </>
     );

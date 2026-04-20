@@ -1,21 +1,25 @@
+"use client";
+
 import { useState, useEffect, useCallback } from "react";
-import Head from "next/head";
 import { api } from "@/lib/api";
+import { PG, SearchMeta, FilterMeta } from "@/interfaces/pg";
 import { PGCard } from "@/components/pgs/PGCard";
 import SearchBar from "@/components/pgs/SearchBar";
 import FiltersPanel from "@/components/pgs/FiltersPanel";
+import { MapPreview } from "@/components/pgs/MapPreview";
 import { Button } from "@/components/ui/button";
-import { Loader2, X, SearchIcon } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ChevronLeft, ChevronRight, SearchIcon } from "lucide-react";
 
 export default function PGSearchPage() {
-    // ---------------- STATE ----------------
-    const [pgs, setPgs] = useState<any[]>([]);
-    const [meta, setMeta] = useState<any>(null);
-    const [filterOptions, setFilterOptions] = useState<any>(null);
+    const [pgs, setPgs] = useState<PG[]>([]);
+    const [meta, setMeta] = useState<SearchMeta | null>(null);
+    const [filterOptions, setFilterOptions] = useState<FilterMeta | null>(null);
     const [loading, setLoading] = useState(true);
     const [showFilters, setShowFilters] = useState(false);
+
+    // Track hovered PG for Map
+    const [hoveredLocation, setHoveredLocation] = useState<{ lat: number, lng: number, name: string } | null>(null);
 
     const [searchTerm, setSearchTerm] = useState("");
     const [appliedFilters, setAppliedFilters] = useState({
@@ -25,130 +29,137 @@ export default function PGSearchPage() {
         messType: "",
         sort: "relevance",
         amenities: [] as string[],
+        minRent: 1000,
+        maxRent: 20000
     });
 
     const [currentPage, setCurrentPage] = useState(1);
 
-    // ---------------- FETCHERS ----------------
-    useEffect(() => {
-        api.get("/pgs/meta").then((res) => setFilterOptions(res.data.data));
-    }, []);
+    const fetchMeta = async () => {
+        try {
+            const res = await api.get("/pgs/meta");
+            setFilterOptions(res.data.data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     const fetchPGs = useCallback(async () => {
         try {
             setLoading(true);
             const params = {
                 search: searchTerm || undefined,
-                city: appliedFilters.city || undefined,
-                state: appliedFilters.state || undefined,
-                pgType: appliedFilters.pgType || undefined,
-                messType: appliedFilters.messType || undefined,
+                ...appliedFilters,
                 amenities: appliedFilters.amenities.length > 0 ? appliedFilters.amenities.join(",") : undefined,
-                sort: appliedFilters.sort,
                 page: currentPage,
-                limit: 12,
+                limit: 10,
             };
             const res = await api.get("/pgs", { params });
             setPgs(res.data.data);
             setMeta(res.data.meta);
         } catch (err) {
-            console.error("Fetch failed", err);
+            console.error(err);
         } finally {
             setLoading(false);
         }
     }, [searchTerm, appliedFilters, currentPage]);
 
     useEffect(() => {
+        fetchMeta();
+    }, [])
+    useEffect(() => {
         fetchPGs();
     }, [fetchPGs]);
 
-    // ---------------- HELPERS ----------------
-    const removeFilter = (key: string, value?: string) => {
-        if (key === "amenities" && value) {
-            setAppliedFilters(prev => ({
-                ...prev,
-                amenities: prev.amenities.filter(a => a !== value)
-            }));
-        } else {
-            setAppliedFilters(prev => ({ ...prev, [key]: "" }));
-        }
-    };
-
     return (
-        <>
-            <Head><title>Find Your Home | MillionHuts</title></Head>
+        <div className="min-h-screen bg-background transition-colors duration-300">
+            {/* Promotion Banner Placeholder */}
+            <div className="container mx-auto px-4 pt-6">
+                <Skeleton className="w-full h-[200px] md:h-[300px] rounded-[40px] bg-muted/50" />
+            </div>
 
-            <div className="min-h-screen bg-slate-50/50">
-                {/* 🔥 BANNER SKELETON */}
-                <div className="container mx-auto px-4 pt-6">
-                    <Skeleton className="w-full h-[300px] md:h-[400px] rounded-3xl bg-slate-200" />
-                </div>
-
-                {/* 🔥 STICKY SEARCH BAR */}
-                <div className="sticky top-[64px] z-30 bg-white/80 backdrop-blur-md border-b shadow-sm mt-8 transition-all">
-                    <div className="container mx-auto px-4 py-4 space-y-4">
-                        <SearchBar
-                            search={searchTerm}
-                            setSearch={setSearchTerm}
-                            onSearch={fetchPGs}
-                            onOpenFilters={() => setShowFilters(true)}
-                        />
-
-                        {/* 🔥 APPLIED FILTERS CHIPS */}
-                        <div className="flex flex-wrap gap-2 items-center min-h-[32px]">
-                            {Object.entries(appliedFilters).map(([key, value]) => {
-                                if (!value || (Array.isArray(value) && value.length === 0) || key === 'sort') return null;
-                                if (Array.isArray(value)) {
-                                    return value.map(v => (
-                                        <Badge key={v} variant="secondary" className="pl-3 pr-1 py-1 rounded-full gap-1 border-primary/20 bg-primary/5 text-primary capitalize">
-                                            {v} <X className="h-3 w-3 cursor-pointer hover:text-destructive" onClick={() => removeFilter(key, v)} />
-                                        </Badge>
-                                    ));
-                                }
-                                return (
-                                    <Badge key={key} variant="secondary" className="pl-3 pr-1 py-1 rounded-full gap-1 border-primary/20 bg-primary/5 text-primary capitalize">
-                                        {value} <X className="h-3 w-3 cursor-pointer hover:text-destructive" onClick={() => removeFilter(key)} />
-                                    </Badge>
-                                );
-                            })}
-                        </div>
-                    </div>
-                </div>
-
-                <FiltersPanel
-                    open={showFilters}
-                    onClose={() => setShowFilters(false)}
-                    filters={appliedFilters}
-                    setAppliedFilters={(f) => {
-                        setAppliedFilters(f);
-                        setCurrentPage(1);
-                    }}
-                    meta={filterOptions}
-                />
-
-                {/* 🔥 RESULTS */}
-                <div className="container mx-auto px-4 py-12">
-                    {loading ? (
-                        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                            {[...Array(8)].map((_, i) => <Skeleton key={i} className="h-[350px] rounded-2xl" />)}
-                        </div>
-                    ) : pgs.length > 0 ? (
-                        <div className="space-y-12">
-                            <div className="flex flex-col gap-8">
-                                {pgs.map((pg, idx) => <PGCard key={pg.pgCode} pg={pg} index={idx} />)}
-                            </div>
-                            {/* Pagination Logic here... */}
-                        </div>
-                    ) : (
-                        <div className="text-center py-32 bg-white rounded-3xl border border-dashed border-slate-300">
-                            <SearchIcon className="mx-auto h-12 w-12 text-slate-300 mb-4" />
-                            <h3 className="text-xl font-bold text-slate-900">No properties found</h3>
-                            <p className="text-slate-500 mb-6">Try adjusting your filters or search term.</p>
-                            <Button onClick={() => setAppliedFilters({ city: "", state: "", pgType: "", messType: "", sort: "relevance", amenities: [] })} variant="outline">Reset All Filters</Button>
-                        </div>
-                    )}
+            {/* Sticky Header with Search */}
+            <div className="sticky top-0 z-40 glass border-b border-border/50 py-4 mt-6">
+                <div className="container mx-auto px-4">
+                    <SearchBar
+                        filters={appliedFilters}
+                        setAppliedFilters={setAppliedFilters}
+                        onOpenFilters={() => setShowFilters(true)}
+                    />
                 </div>
             </div>
-        </>
+
+            <FiltersPanel
+                open={showFilters}
+                onClose={() => setShowFilters(false)}
+                filters={appliedFilters}
+                setAppliedFilters={setAppliedFilters}
+                meta={filterOptions}
+            />
+
+            <main className="container mx-auto px-4 py-8">
+                <div className="flex flex-col lg:flex-row gap-8">
+
+                    {/* Left: Cards List */}
+                    <div className="w-full lg:w-[60%] flex flex-col gap-6">
+                        {loading ? (
+                            Array(4).fill(0).map((_, i) => <Skeleton key={i} className="h-64 w-full rounded-sm" />)
+                        ) : pgs.length > 0 ? (
+                            <>
+                                {pgs.map((pg) => (
+                                    <div
+                                        key={pg.pgCode}
+                                        onMouseEnter={() => setHoveredLocation({ lat: pg.latitude, lng: pg.longitude, name: pg.name })}
+                                    >
+                                        <PGCard pg={pg} />
+                                    </div>
+                                ))}
+
+                                {/* Pagination */}
+                                {meta && meta.totalPages > 1 && (
+                                    <div className="flex items-center justify-between pt-8 border-t border-border/50">
+                                        <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
+                                            Page {currentPage} of {meta.totalPages}
+                                        </p>
+                                        <div className="flex gap-2">
+                                            <Button
+                                                variant="outline"
+                                                disabled={currentPage === 1}
+                                                onClick={() => setCurrentPage(p => p - 1)}
+                                                className="rounded-sm"
+                                            >
+                                                <ChevronLeft size={16} />
+                                            </Button>
+                                            <Button
+                                                variant="outline"
+                                                disabled={currentPage === meta.totalPages}
+                                                onClick={() => setCurrentPage(p => p + 1)}
+                                                className="rounded-sm"
+                                            >
+                                                <ChevronRight size={16} />
+                                            </Button>
+                                        </div>
+                                    </div>
+                                )}
+                            </>
+                        ) : (
+                            <div className="py-20 text-center bg-card rounded-sm border border-dashed border-border">
+                                <SearchIcon className="mx-auto text-muted-foreground mb-4" />
+                                <h3 className="font-black text-xl">No PGs Found</h3>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Right: Sticky Map (Hidden on mobile) */}
+                    <div className="hidden lg:block lg:w-[40%]">
+                        <MapPreview
+                            lat={hoveredLocation?.lat}
+                            lng={hoveredLocation?.lng}
+                            name={hoveredLocation?.name}
+                        />
+                    </div>
+                </div>
+            </main>
+        </div>
     );
 }

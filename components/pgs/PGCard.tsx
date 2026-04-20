@@ -25,7 +25,7 @@ export function PGCard({ pg, index = 0 }: { pg: any; index?: number }) {
             className="w-full mb-6"
         >
             <Link href={`/pg/${pg.pgCode}`}>
-                <Card className="group flex flex-col md:flex-row overflow-hidden border-none shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all duration-500 cursor-pointer bg-white min-h-[280px]">
+                <Card className="group flex flex-col md:flex-row overflow-hidden border border-border shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all duration-500 cursor-pointer bg-card min-h-[280px]">
 
                     {/* LEFT: Image Section (Flex-1 on Desktop) */}
                     <div className="relative w-full md:flex-1 overflow-hidden bg-muted aspect-video md:aspect-auto">
@@ -38,12 +38,12 @@ export function PGCard({ pg, index = 0 }: { pg: any; index?: number }) {
                         {/* Type Badges */}
                         <div className="absolute top-4 left-4 flex flex-col gap-2">
                             {pg.pgType && (
-                                <Badge className="w-fit bg-black/70 backdrop-blur-md text-white border-none font-black px-3 py-1 text-[10px] tracking-widest uppercase">
+                                <Badge className="w-fit bg-background/70 backdrop-blur-md text-foreground border-none font-black px-3 py-1 text-[10px] tracking-widest uppercase">
                                     {pg.pgType}
                                 </Badge>
                             )}
                             {pg.messAvailable && (
-                                <Badge className="w-fit bg-primary text-white border-none font-black px-3 py-1 text-[10px] tracking-widest uppercase shadow-lg">
+                                <Badge className="w-fit bg-primary text-primary-foreground border-none font-black px-3 py-1 text-[10px] tracking-widest uppercase shadow-lg">
                                     <Utensils className="h-3 w-3 mr-1" /> Mess Inc.
                                 </Badge>
                             )}
@@ -51,7 +51,7 @@ export function PGCard({ pg, index = 0 }: { pg: any; index?: number }) {
 
                         {/* Rent Overlay (Mobile Only) */}
                         <div className="absolute bottom-4 left-4 md:hidden">
-                            <div className="bg-white px-3 py-1.5 rounded-lg shadow-xl border font-bold text-sm">
+                            <div className="bg-background px-3 py-1.5 rounded-lg shadow-xl border border-border font-bold text-sm text-foreground">
                                 ₹{pg.rentStart || "N/A"}+
                             </div>
                         </div>
@@ -63,7 +63,7 @@ export function PGCard({ pg, index = 0 }: { pg: any; index?: number }) {
                             {/* Header */}
                             <div className="flex justify-between items-start">
                                 <div>
-                                    <h3 className="text-2xl md:text-3xl font-black tracking-tighter group-hover:text-primary transition-colors leading-none mb-2">
+                                    <h3 className="text-2xl md:text-3xl font-black tracking-tighter group-hover:text-primary transition-colors leading-none mb-2 text-card-foreground">
                                         {pg.name}
                                     </h3>
                                     <p className="flex items-center gap-1.5 text-muted-foreground text-sm font-medium italic">
@@ -81,7 +81,7 @@ export function PGCard({ pg, index = 0 }: { pg: any; index?: number }) {
                             </div>
 
                             {/* Address (Desktop Only) */}
-                            <p className="hidden md:block text-sm text-slate-500 font-medium max-w-xl line-clamp-1">
+                            <p className="hidden md:block text-sm text-muted-foreground font-medium max-w-xl line-clamp-1">
                                 {pg.address}
                             </p>
 
@@ -93,7 +93,7 @@ export function PGCard({ pg, index = 0 }: { pg: any; index?: number }) {
                                         <Badge
                                             key={item.id}
                                             variant="secondary"
-                                            className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-1.5 rounded-xl border-none gap-2 flex items-center"
+                                            className="bg-secondary hover:bg-secondary/80 text-secondary-foreground font-bold px-3 py-1.5 rounded-xl border-none gap-2 flex items-center"
                                         >
                                             <Icon className="h-3.5 w-3.5" />
                                             {item.amenity.name}
@@ -101,7 +101,7 @@ export function PGCard({ pg, index = 0 }: { pg: any; index?: number }) {
                                     );
                                 })}
                                 {remainingCount > 0 && (
-                                    <Badge variant="outline" className="font-bold px-3 py-1.5 rounded-xl border-dashed border-2">
+                                    <Badge variant="outline" className="font-bold px-3 py-1.5 rounded-xl border-dashed border-2 border-border text-muted-foreground">
                                         +{remainingCount} More
                                     </Badge>
                                 )}
@@ -109,15 +109,15 @@ export function PGCard({ pg, index = 0 }: { pg: any; index?: number }) {
                         </div>
 
                         {/* Footer Section */}
-                        <div className="flex items-center justify-between mt-6 pt-6 border-t border-slate-100">
+                        <div className="flex items-center justify-between mt-6 pt-6 border-t border-border">
                             <div className="flex gap-4">
                                 <div className="flex flex-col">
                                     <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">PG Code</span>
-                                    <span className="text-xs font-bold font-mono">{pg.pgCode}</span>
+                                    <span className="text-xs font-bold font-mono text-card-foreground">{pg.pgCode}</span>
                                 </div>
                             </div>
 
-                            <Button className="rounded-xl font-bold gap-2 px-6 h-11 shadow-lg shadow-primary/20">
+                            <Button className="rounded-sm font-bold gap-2 px-6 h-11 shadow-lg shadow-primary/20 bg-primary text-primary-foreground hover:bg-primary/90">
                                 View Property <ArrowRight className="h-4 w-4" />
                             </Button>
                         </div>

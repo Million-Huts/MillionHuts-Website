@@ -1,48 +1,78 @@
-import { Card, CardContent } from '@/components/ui/card';
+"use client";
+
 import { motion, AnimatePresence } from "framer-motion";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ownerSteps, tenantSteps } from '@/data/homepage';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+    Search,
+    Home,
+    LayoutDashboard,
+    PlusCircle,
+    Users,
+    Settings2,
+    ArrowRight
+} from "lucide-react";
+
+const tenantSteps = [
+    {
+        icon: <Search className="w-5 h-5" />,
+        title: "Search PGs",
+        description: "Browse verified PGs by location, budget, and amenities.",
+    },
+    {
+        icon: <Home className="w-5 h-5" />,
+        title: "Visit & Confirm",
+        description: "Visit the PG, check facilities, and finalize directly.",
+    },
+    {
+        icon: <LayoutDashboard className="w-5 h-5" />,
+        title: "Use Dashboard",
+        description: "Manage complaints, payments, and connect with PG mates.",
+    },
+];
+
+const ownerSteps = [
+    {
+        icon: <PlusCircle className="w-5 h-5" />,
+        title: "List Your PG",
+        description: "Add your property with details, photos, and pricing.",
+    },
+    {
+        icon: <Users className="w-5 h-5" />,
+        title: "Manage Tenants",
+        description: "Track tenants, rent, and occupancy in one place.",
+    },
+    {
+        icon: <Settings2 className="w-5 h-5" />,
+        title: "Automate Operations",
+        description: "Handle complaints, payments, and updates easily.",
+    },
+];
 
 export default function HowItWorks() {
     return (
-        <section className="py-24 bg-background relative overflow-hidden">
-            {/* Background Decorative Element */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,rgba(var(--primary-rgb),0.03)_0,transparent_70%)] -z-10" />
+        <section className="py-12 bg-background">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    className="text-center mb-16"
-                >
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider mb-4">
-                        <Sparkles className="h-3 w-3" />
-                        Seamless Experience
-                    </div>
-                    <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
-                        How It <span className="text-primary italic">Works</span>
+                {/* HEADER - Compact Sizes */}
+                <div className="text-center mb-10">
+                    <h2 className="text-2xl md:text-4xl font-bold mb-3">
+                        How It Works
                     </h2>
-                    <p className="text-muted-foreground max-w-xl mx-auto text-lg">
-                        Whether you're looking for a bed or managing a hundred, we've automated the hard parts.
+                    <p className="text-sm md:text-base text-muted-foreground max-w-md mx-auto">
+                        Simple steps for tenants and PG owners.
                     </p>
-                </motion.div>
+                </div>
 
+                {/* TABS - Compact Pill Style */}
                 <Tabs defaultValue="tenants" className="w-full">
-                    <div className="flex justify-center mb-12">
-                        <TabsList className="p-1 h-auto bg-muted/50 rounded-full border">
-                            <TabsTrigger
-                                value="tenants"
-                                className="rounded-full px-8 py-3 text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all"
-                            >
-                                🏠 I'm a Tenant
+                    <div className="flex justify-center mb-8">
+                        <TabsList className="rounded-full h-11 p-1 bg-muted/50 border">
+                            <TabsTrigger value="tenants" className="px-6 rounded-full text-sm font-semibold">
+                                Tenant
                             </TabsTrigger>
-                            <TabsTrigger
-                                value="owners"
-                                className="rounded-full px-8 py-3 text-base data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all"
-                            >
-                                🏢 I'm an Owner
+                            <TabsTrigger value="owners" className="px-6 rounded-full text-sm font-semibold">
+                                Owner
                             </TabsTrigger>
                         </TabsList>
                     </div>
@@ -63,48 +93,47 @@ export default function HowItWorks() {
 
 function StepGrid({ steps }: { steps: any[] }) {
     return (
-        <div className="relative">
-            {/* Connecting Line for Desktop */}
-            <div className="hidden md:block absolute top-1/2 left-[15%] right-[15%] h-0.5 border-t-2 border-dashed border-muted-foreground/20 -translate-y-1/2 -z-10" />
+        <div className="grid md:grid-cols-3 gap-5">
+            {steps.map((step, index) => (
+                <motion.div
+                    key={step.title}
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                >
+                    <Card className="h-full border hover:border-primary/40 transition-colors rounded-2xl group">
+                        <CardContent className="p-5">
 
-            <div className="grid md:grid-cols-3 gap-8">
-                {steps.map((step, index) => (
-                    <motion.div
-                        key={step.title}
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.4, delay: index * 0.1 }}
-                        whileHover={{ y: -10 }}
-                        className="relative group"
-                    >
-                        {/* Background Number Decal */}
-                        <span className="absolute -top-10 -left-4 text-8xl font-black text-muted/30 select-none group-hover:text-primary/10 transition-colors">
-                            0{index + 1}
-                        </span>
-
-                        <Card className="relative overflow-hidden border-none shadow-xl shadow-shadow/5 bg-card/50 backdrop-blur-sm pt-4">
-                            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
-
-                            <CardContent className="p-8 flex flex-col items-center text-center">
-                                <div className="w-20 h-20 mb-6 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center rotate-3 group-hover:rotate-0 transition-transform duration-300 shadow-inner">
-                                    <step.icon className="h-10 w-10 text-primary" />
+                            {/* ICON & STEP HEADER */}
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
+                                    {step.icon}
                                 </div>
+                                <span className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest">
+                                    Step {index + 1}
+                                </span>
+                            </div>
 
-                                <h3 className="text-2xl font-bold mb-3 group-hover:text-primary transition-colors">
-                                    {step.title}
-                                </h3>
-                                <p className="text-muted-foreground leading-relaxed">
-                                    {step.description}
-                                </p>
+                            {/* TITLE */}
+                            <h3 className="text-base font-semibold mb-2 group-hover:text-primary transition-colors">
+                                {step.title}
+                            </h3>
 
-                                <div className="mt-6 flex items-center text-xs font-bold text-primary opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-widest">
-                                    Learn More <ArrowRight className="ml-2 h-3 w-3" />
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </motion.div>
-                ))}
-            </div>
+                            {/* DESCRIPTION */}
+                            <p className="text-sm text-muted-foreground leading-snug">
+                                {step.description}
+                            </p>
+
+                            {/* COMPACT CTA */}
+                            <div className="mt-4 flex items-center text-xs text-primary font-bold group/link">
+                                Learn more
+                                <ArrowRight className="ml-1 h-3 w-3 transition-transform group-hover/link:translate-x-1" />
+                            </div>
+
+                        </CardContent>
+                    </Card>
+                </motion.div>
+            ))}
         </div>
     );
 }
