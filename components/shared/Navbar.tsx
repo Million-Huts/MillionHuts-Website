@@ -19,9 +19,9 @@ const navigation = [
     { name: 'Features', href: '/features' },
     { name: 'Pricing', href: '/pricing' },
     { name: 'PG', href: '/pg' },
+    { name: 'Safety', href: '/safety' },
     { name: 'Blog', href: '/blog' },
     { name: 'Contact', href: '/contact' },
-    { name: 'Docs', href: '/docs' },
 ];
 
 export function Navbar() {
