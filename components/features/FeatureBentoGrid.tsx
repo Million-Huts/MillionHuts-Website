@@ -1,57 +1,49 @@
 import { motion } from "framer-motion";
-import { Building2, Users2, CreditCard, LayoutGrid, FileStack, TrendingDown } from "lucide-react";
+import { Shield, LayoutGrid, DoorOpen, Receipt, Bell } from "lucide-react";
+import { bentoPillars } from "@/data/features";
 
-const mainFeatures = [
-    {
-        title: "Property & Floor Management",
-        desc: "Manage multiple buildings with floor-wise room mapping and real-time occupancy tracking.",
-        icon: Building2,
-        size: "md:col-span-2",
-        color: "text-blue-500 bg-blue-50"
-    },
-    {
-        title: "Staff Roles",
-        desc: "Assign roles to wardens and cleaning staff.",
-        icon: Users2,
-        size: "md:col-span-1",
-        color: "text-purple-500 bg-purple-50"
-    },
-    {
-        title: "Expense Tracker",
-        desc: "Monitor utility bills and maintenance costs.",
-        icon: TrendingDown,
-        size: "md:col-span-1",
-        color: "text-red-500 bg-red-50"
-    },
-    {
-        title: "Smart Payments",
-        desc: "Automated rent collection with digital ledger tracking for every single tenant.",
-        icon: CreditCard,
-        size: "md:col-span-2",
-        color: "text-green-500 bg-green-50"
-    }
-];
+// Map pillar id → lucide icon
+const iconMap: Record<string, React.ReactNode> = {
+  kyc:     <Shield    className="h-5 w-5" />,
+  floor:   <LayoutGrid className="h-5 w-5" />,
+  gate:    <DoorOpen  className="h-5 w-5" />,
+  finance: <Receipt   className="h-5 w-5" />,
+  alerts:  <Bell      className="h-5 w-5" />,
+};
 
 export default function FeatureBentoGrid() {
-    return (
-        <section className="py-20 px-4">
-            <div className="mx-auto max-w-7xl">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {mainFeatures.map((f, i) => (
-                        <motion.div
-                            key={i}
-                            whileHover={{ y: -5 }}
-                            className={`${f.size} p-8 rounded-[2.5rem] border bg-card/50 backdrop-blur-sm group transition-all`}
-                        >
-                            <div className={`w-14 h-14 rounded-2xl ${f.color} flex items-center justify-center mb-6`}>
-                                <f.icon className="h-7 w-7" />
-                            </div>
-                            <h3 className="text-2xl font-bold mb-3 tracking-tight">{f.title}</h3>
-                            <p className="text-muted-foreground leading-relaxed">{f.desc}</p>
-                        </motion.div>
-                    ))}
-                </div>
-            </div>
-        </section>
-    );
+  return (
+    <section className="py-16 md:py-24 px-4">
+      <div className="container mx-auto max-w-6xl">
+        <div className="text-center mb-10 md:mb-14">
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-foreground mb-3">
+            Everything your PG needs
+          </h2>
+          <p className="text-muted-foreground text-base md:text-lg max-w-xl mx-auto">
+            Five core pillars that cover every aspect of modern PG operations.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
+          {bentoPillars.map((pillar, i) => (
+            <motion.div
+              key={pillar.id}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.07, duration: 0.4 }}
+              whileHover={{ y: -3 }}
+              className={`rounded-3xl border border-border bg-card/60 backdrop-blur-sm p-6 md:p-7 hover:border-primary/30 transition-all ${pillar.colSpan}`}
+            >
+              <span className={`inline-flex items-center justify-center w-11 h-11 rounded-2xl mb-4 ${pillar.accentBg} ${pillar.accentText}`}>
+                {iconMap[pillar.id]}
+              </span>
+              <h3 className="text-base md:text-lg font-bold text-foreground mb-2">{pillar.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{pillar.desc}</p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 }
