@@ -5,6 +5,7 @@ import ContactHero from "@/components/contact/ContactHero";
 import ContactMain from "@/components/contact/ContactMain";
 import ContactFAQ from "@/components/contact/ContactFAQ";
 import MapSection from "@/components/contact/MapSection";
+import QuickConnectBar from "@/components/contact/QuickConnectBar";
 
 export default function ContactPage() {
     return (
@@ -111,10 +112,15 @@ export default function ContactPage() {
                             contactPoint: [
                                 {
                                     "@type": "ContactPoint",
+                                    telephone: "+91-98765-43210",
+                                    email: "hello@millionhuts.com",
                                     contactType: "customer support",
                                     areaServed: "IN",
                                     availableLanguage: ["English", "Hindi"],
                                 },
+                            ],
+                            sameAs: [
+                                "https://wa.me/919876543210",
                             ],
                         }),
                     }}
@@ -131,39 +137,88 @@ export default function ContactPage() {
                             image: "https://millionhuts.com/logo.png",
                             "@id": "https://millionhuts.com",
                             url: "https://millionhuts.com",
-                            telephone: "+91-XXXXXXXXXX",
+                            telephone: "+91-98765-43210",
+                            email: "hello@millionhuts.com",
                             address: {
                                 "@type": "PostalAddress",
-                                addressLocality: "Bangalore",
+                                streetAddress: "Yelahanka",
+                                addressLocality: "Bengaluru",
                                 addressRegion: "Karnataka",
+                                postalCode: "560064",
                                 addressCountry: "IN",
                             },
                             geo: {
                                 "@type": "GeoCoordinates",
-                                latitude: 12.9716,
-                                longitude: 77.5946,
+                                latitude: 13.1183,
+                                longitude: 77.5991,
                             },
+                            openingHoursSpecification: {
+                                "@type": "OpeningHoursSpecification",
+                                dayOfWeek: [
+                                    "Monday",
+                                    "Tuesday",
+                                    "Wednesday",
+                                    "Thursday",
+                                    "Friday",
+                                    "Saturday",
+                                ],
+                                opens: "09:00",
+                                closes: "19:00",
+                            },
+                        }),
+                    }}
+                />
+
+                {/* FAQ Schema */}
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{
+                        __html: JSON.stringify({
+                            "@context": "https://schema.org",
+                            "@type": "FAQPage",
+                            mainEntity: [
+                                {
+                                    "@type": "Question",
+                                    name: "How do I verify my KYC?",
+                                    acceptedAnswer: {
+                                        "@type": "Answer",
+                                        text: "You can complete your KYC verification directly from the Tenant Portal. Navigate to Profile → KYC Verification and upload your Aadhaar or PAN card. Verification is typically completed within 24 hours.",
+                                    },
+                                },
+                                {
+                                    "@type": "Question",
+                                    name: "Can I manage multiple PGs under one account?",
+                                    acceptedAnswer: {
+                                        "@type": "Answer",
+                                        text: "Yes! The Owner Portal supports multi-property management under a single account. You can add unlimited properties depending on your plan, and switch between them from the dashboard.",
+                                    },
+                                },
+                                {
+                                    "@type": "Question",
+                                    name: "What happens if my gate QR code isn't scanning?",
+                                    acceptedAnswer: {
+                                        "@type": "Answer",
+                                        text: "First, ensure your screen brightness is at maximum. If the issue persists, you can use the manual entry code shown below the QR. Contact support via WhatsApp for immediate assistance.",
+                                    },
+                                },
+                            ],
                         }),
                     }}
                 />
             </Head>
 
+            {/* Sticky mobile quick-connect bar */}
+            <QuickConnectBar />
+
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 0.5 }}
-                className="flex flex-col min-h-screen"
+                transition={{ duration: 0.4 }}
+                className="flex flex-col min-h-screen pb-20 md:pb-0"
             >
-                {/* Hero Section - The Hook */}
                 <ContactHero />
-
-                {/* Main Interaction - Details & Form */}
                 <ContactMain />
-
-                {/* FAQ Section - Reducing Friction */}
                 <ContactFAQ />
-
-                {/* Map Section - The Trust Builder */}
                 <MapSection />
             </motion.div>
         </>

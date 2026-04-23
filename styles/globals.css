@@ -156,4 +156,9 @@
   .bg-hero-glow {
     background: radial-gradient(circle at 50% 0%, oklch(var(--primary) / 0.08) 0%, transparent 75%);
   }
+
+  /* Safe area padding for mobile devices */
+  .safe-area-pb {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
 }
