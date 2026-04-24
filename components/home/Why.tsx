@@ -1,79 +1,129 @@
-import { Card, CardContent } from '@/components/ui/card';
-import { features } from '@/data/homepage';
-import { motion } from "framer-motion";
-import { ShieldCheck } from 'lucide-react';
+"use client";
+
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronDown, Plus } from "lucide-react";
+import { features } from "@/data/homepage";
 
 export default function Why() {
+    const [open, setOpen] = useState(false);
+
+    // Mobile Logic: Show first 2, hide the rest
+    const visibleFeatures = features.slice(0, 2);
+    const hiddenFeatures = features.slice(2);
+
     return (
-        <section className="py-24 relative overflow-hidden bg-muted/20">
-            {/* Soft decorative background glow */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-1/2 bg-primary/5 blur-[120px] rounded-full -z-10" />
+        <section className="py-12 bg-muted/30 relative overflow-hidden">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div className="grid lg:grid-cols-3 gap-12 items-center mb-16">
-                    <motion.div
-                        initial={{ opacity: 0, x: -30 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.6 }}
-                        className="lg:col-span-1 text-center lg:text-left"
-                    >
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-widest mb-4">
-                            <ShieldCheck className="h-4 w-4" />
-                            The MillionHuts Standard
-                        </div>
-                        <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-6 leading-tight">
-                            Why the best <br />
-                            <span className="text-primary italic">choose us.</span>
-                        </h2>
-                        <p className="text-muted-foreground text-lg mb-8">
-                            We’ve removed the friction from PG hunting. No more fake listings,
-                            endless brokerage calls, or manual rent tracking.
-                        </p>
-                        <div className="hidden lg:block h-1 w-24 bg-primary rounded-full" />
-                    </motion.div>
-
-                    <div className="lg:col-span-2 grid sm:grid-cols-2 gap-6">
-                        {features.map((feature, index) => (
-                            <motion.div
-                                key={feature.title}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.5, delay: index * 0.1 }}
-                            >
-                                <Card className="relative h-full overflow-hidden border-none bg-background shadow-lg shadow-black/5 group hover:shadow-primary/10 transition-all duration-500">
-                                    {/* Subtle hover background accent */}
-                                    <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full translate-x-12 -translate-y-12 group-hover:translate-x-6 group-hover:-translate-y-6 transition-transform duration-500" />
-
-                                    <CardContent className="p-8">
-                                        <div className="w-14 h-14 mb-6 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-500 shadow-inner">
-                                            <feature.icon className="h-7 w-7" />
-                                        </div>
-                                        <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors uppercase tracking-tight">
-                                            {feature.title}
-                                        </h3>
-                                        <p className="text-muted-foreground leading-relaxed">
-                                            {feature.description}
-                                        </p>
-                                    </CardContent>
-                                </Card>
-                            </motion.div>
-                        ))}
-                    </div>
+                {/* HEADER */}
+                <div className="text-center mb-12">
+                    <h2 className="text-2xl md:text-4xl font-bold mb-3 tracking-tight">
+                        Why Choose MillionHuts
+                    </h2>
+                    <p className="text-sm md:text-base text-muted-foreground max-w-lg mx-auto">
+                        We’ve removed the friction from PG living. From discovery to daily management, everything is digital.
+                    </p>
                 </div>
 
-                {/* Bottom Trust bar */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    className="pt-12 border-t border-dashed border-muted-foreground/20 flex flex-wrap justify-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all"
-                >
-                    {/* You can put micro-logos here like 'Secure Payments', 'Verified Partners' etc */}
-                    <span className="text-sm font-bold tracking-widest uppercase">100% Secure Payments</span>
-                    <span className="text-sm font-bold tracking-widest uppercase">Direct Communication</span>
-                    <span className="text-sm font-bold tracking-widest uppercase">Verified Locations</span>
-                </motion.div>
+                {/* DESKTOP GRID: 4 Columns, 8 Items */}
+                <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-5">
+                    {/* Map existing features (6) + 2 placeholders if needed to reach 8 */}
+                    {features.concat(features.slice(0, 2)).slice(0, 8).map((feature, index) => (
+                        <motion.div
+                            key={`${feature.title}-${index}`}
+                            initial={{ opacity: 0, y: 10 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: index * 0.05 }}
+                        >
+                            <Card className="h-full border-none shadow-sm hover:shadow-md transition-shadow bg-card/60 backdrop-blur-sm">
+                                <CardContent className="p-6 flex flex-col items-start gap-4">
+                                    <div className="w-12 h-12 flex items-center justify-center rounded-2xl bg-primary/10 text-primary shrink-0 transition-transform group-hover:scale-110">
+                                        <feature.icon className="h-6 w-6" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-sm font-bold mb-1.5">
+                                            {feature.title}
+                                        </h3>
+                                        <p className="text-xs text-muted-foreground leading-relaxed">
+                                            {feature.description}
+                                        </p>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </motion.div>
+                    ))}
+                </div>
+
+                {/* MOBILE VIEW: List Style with Accordion */}
+                <div className="md:hidden space-y-3">
+                    {visibleFeatures.map((feature) => (
+                        <Card key={feature.title} className="border-none shadow-sm">
+                            <CardContent className="p-4 flex gap-4 items-start">
+                                <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-primary/10 text-primary shrink-0">
+                                    <feature.icon className="h-5 w-5" />
+                                </div>
+                                <div>
+                                    <h3 className="text-sm font-bold">
+                                        {feature.title}
+                                    </h3>
+                                    <p className="text-xs text-muted-foreground mt-0.5">
+                                        {feature.description}
+                                    </p>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    ))}
+
+                    {/* COLLAPSIBLE SECTION */}
+                    <div className="pt-2">
+                        <button
+                            onClick={() => setOpen(!open)}
+                            className="w-full flex items-center justify-center gap-2 text-xs font-bold py-3 px-4 bg-primary/5 text-primary rounded-xl border border-primary/10 transition-all active:scale-95"
+                        >
+                            {open ? "Show Less" : "View More Benefits"}
+                            <ChevronDown
+                                className={`h-4 w-4 transition-transform duration-300 ${open ? "rotate-180" : ""}`}
+                            />
+                        </button>
+
+                        <AnimatePresence>
+                            {open && (
+                                <motion.div
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: "auto", opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    className="overflow-hidden space-y-3 pt-3"
+                                >
+                                    {hiddenFeatures.map((feature) => (
+                                        <Card key={feature.title} className="border-none shadow-sm">
+                                            <CardContent className="p-4 flex gap-4 items-start">
+                                                <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-primary/10 text-primary shrink-0">
+                                                    <feature.icon className="h-5 w-5" />
+                                                </div>
+                                                <div>
+                                                    <h3 className="text-sm font-bold">
+                                                        {feature.title}
+                                                    </h3>
+                                                    <p className="text-xs text-muted-foreground mt-0.5">
+                                                        {feature.description}
+                                                    </p>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    ))}
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
+                </div>
+            </div>
+
+            {/* Subtle Decorative Element for Desktop */}
+            <div className="hidden lg:block absolute left-0 bottom-0 opacity-10 pointer-events-none">
+                <div className="w-64 h-64 border-[32px] border-primary rounded-full -translate-x-1/2 translate-y-1/2" />
             </div>
         </section>
     );
