@@ -1,127 +1,128 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { Fingerprint, QrCode, MessageSquareWarning, ShieldCheck, Clock, FileCheck, CheckCircle2 } from "lucide-react";
+import { ShieldCheck, QrCode, MessageSquareWarning, Fingerprint, Clock, FileCheck } from "lucide-react";
 
 const pillars = [
     {
-        number: "01",
+        id: "kyc",
         icon: Fingerprint,
-        label: "Identity Layer",
-        title: "Every resident is verified.",
-        body: "Every tenant on MillionHuts is backed by a secure identity vault. Aadhaar and PAN documents are encrypted and stored — so you always know exactly who lives beside you.",
-        points: ["Aadhaar & PAN verification", "Encrypted document storage", "Instant onboarding at any property"],
-        pointIcons: [ShieldCheck, FileCheck, Clock],
-        stat: "100%",
-        statLabel: "Verified",
-        palette: {
-            bg: "bg-blue-50 dark:bg-blue-950/20",
-            border: "border-blue-100 dark:border-blue-900/50",
-            icon: "bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400",
-            stat: "text-blue-600 dark:text-blue-400",
-            dot: "bg-blue-500",
-        },
+        tag: "Identity Layer",
+        title: "Verified Residents",
+        subtitle: "KYC Identity Vault",
+        description:
+            "Every tenant on MillionHuts is backed by a secure identity vault. Aadhaar and PAN documents are encrypted and stored — so you always know exactly who lives beside you.",
+        highlights: [
+            { icon: ShieldCheck, text: "Aadhaar & PAN verification" },
+            { icon: FileCheck, text: "Encrypted document storage" },
+            { icon: Clock, text: "Instant onboarding at any property" },
+        ],
+        size: "md:col-span-2",
+        accent: "from-blue-600/20 to-blue-900/10",
+        iconBg: "bg-blue-500/10 text-blue-400 border-blue-500/20",
+        tagColor: "text-blue-400 bg-blue-500/10 border-blue-500/20",
     },
     {
-        number: "02",
+        id: "gate",
         icon: QrCode,
-        label: "Perimeter Layer",
-        title: "Every entry is logged.",
-        body: "Every visitor and delivery leaves a permanent digital footprint. No more manual registers that can be tampered with — just a clean, timestamped log of every entry and exit.",
-        points: ["QR-based visitor check-in", "Timestamped entry & exit logs", "Staff-tamper-proof records"],
-        pointIcons: [QrCode, Clock, ShieldCheck],
-        stat: "0",
-        statLabel: "Tampering",
-        palette: {
-            bg: "bg-violet-50 dark:bg-violet-950/20",
-            border: "border-violet-100 dark:border-violet-900/50",
-            icon: "bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400",
-            stat: "text-violet-600 dark:text-violet-400",
-            dot: "bg-violet-500",
-        },
+        tag: "Perimeter Layer",
+        title: "Digital Gate Control",
+        subtitle: "QR-Based Entry System",
+        description:
+            "Every visitor and delivery leaves a permanent digital footprint. No more manual registers that can be tampered with — just a clean, timestamped log of every entry and exit.",
+        highlights: [
+            { icon: QrCode, text: "QR-based visitor check-in" },
+            { icon: Clock, text: "Timestamped entry & exit logs" },
+            { icon: ShieldCheck, text: "Staff-tamper-proof records" },
+        ],
+        size: "md:col-span-1",
+        accent: "from-slate-600/20 to-slate-900/10",
+        iconBg: "bg-slate-400/10 text-slate-300 border-slate-500/20",
+        tagColor: "text-slate-300 bg-slate-500/10 border-slate-500/20",
     },
     {
-        number: "03",
+        id: "complaints",
         icon: MessageSquareWarning,
-        label: "Accountability Layer",
-        title: "Every issue is resolved.",
-        body: "Every issue raised is tracked, timed, and proof-resolved. No more verbal promises. Every complaint has a status, an owner, and a resolution timestamp — visible to both tenant and management.",
-        points: ["Real-time status tracking", "Photo & media proof attachments", "Resolution timestamps on record"],
-        pointIcons: [Clock, FileCheck, ShieldCheck],
-        stat: "<2hr",
-        statLabel: "Resolution",
-        palette: {
-            bg: "bg-emerald-50 dark:bg-emerald-950/20",
-            border: "border-emerald-100 dark:border-emerald-900/50",
-            icon: "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400",
-            stat: "text-emerald-600 dark:text-emerald-400",
-            dot: "bg-emerald-500",
-        },
+        tag: "Accountability Layer",
+        title: "Accountable Resolution",
+        subtitle: "Digital Complaint Desk",
+        description:
+            "Every issue raised is tracked, timed, and proof-resolved. No more verbal promises. Every complaint has a status, an owner, and a resolution timestamp — visible to both tenant and management.",
+        highlights: [
+            { icon: Clock, text: "Real-time status tracking" },
+            { icon: FileCheck, text: "Photo & media proof attachments" },
+            { icon: ShieldCheck, text: "Resolution timestamps on record" },
+        ],
+        size: "md:col-span-1",
+        accent: "from-indigo-600/20 to-indigo-900/10",
+        iconBg: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
+        tagColor: "text-indigo-400 bg-indigo-500/10 border-indigo-500/20",
     },
 ];
 
 export default function SafetyPillars() {
     return (
-        <section className="py-28 bg-background">
-            <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-
-                {/* Section label */}
-                <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    className="text-center mb-20"
-                >
-                    <p className="text-xs font-black uppercase tracking-[0.3em] text-muted-foreground mb-4">Three Pillars of Safety</p>
-                    <h2 className="text-4xl md:text-5xl font-black tracking-tight text-foreground">
-                        Security at every layer.
+        <section className="py-24 px-4 bg-background">
+            <div className="mx-auto max-w-7xl">
+                {/* Section header */}
+                <div className="text-center mb-16">
+                    <p className="text-xs font-black uppercase tracking-[0.3em] text-muted-foreground mb-3">
+                        Three Pillars of Safety
+                    </p>
+                    <h2 className="text-3xl md:text-5xl font-black tracking-tight">
+                        Security built into{" "}
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-slate-900 to-slate-600 dark:from-slate-100 dark:to-slate-400">
+                            every layer.
+                        </span>
                     </h2>
-                </motion.div>
+                    <p className="text-muted-foreground mt-4 max-w-xl mx-auto text-base">
+                        From who lives there, to who enters the gate, to how problems get fixed — every touchpoint is digitally secured.
+                    </p>
+                </div>
 
-                {/* Pillars */}
-                <div className="space-y-5">
-                    {pillars.map((p, i) => (
+                {/* Bento grid */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    {pillars.map((pillar, i) => (
                         <motion.div
-                            key={p.number}
+                            key={pillar.id}
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true, margin: "-60px" }}
-                            transition={{ duration: 0.5, delay: i * 0.08 }}
-                            className={`grid grid-cols-1 lg:grid-cols-12 rounded-2xl border ${p.palette.border} ${p.palette.bg} overflow-hidden`}
+                            viewport={{ once: true }}
+                            transition={{ delay: i * 0.1, duration: 0.5 }}
+                            whileHover={{ y: -4 }}
+                            className={`${pillar.size} relative p-8 rounded-[2rem] border bg-card overflow-hidden group transition-all duration-300 hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-600`}
                         >
-                            {/* Left — number + icon */}
-                            <div className="lg:col-span-1 flex lg:flex-col items-center justify-center gap-4 p-6 lg:p-8 border-b lg:border-b-0 lg:border-r border-inherit">
-                                <span className="text-2xl font-black text-muted-foreground/30">{p.number}</span>
-                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${p.palette.icon}`}>
-                                    <p.icon className="h-5 w-5" />
+                            {/* Background gradient */}
+                            <div className={`absolute inset-0 bg-gradient-to-br ${pillar.accent} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+
+                            <div className="relative z-10">
+                                {/* Tag */}
+                                <span className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border mb-5 ${pillar.tagColor}`}>
+                                    {pillar.tag}
+                                </span>
+
+                                {/* Icon */}
+                                <div className={`w-14 h-14 rounded-2xl border flex items-center justify-center mb-6 ${pillar.iconBg}`}>
+                                    <pillar.icon className="h-7 w-7" />
                                 </div>
-                            </div>
 
-                            {/* Middle — title + body */}
-                            <div className="lg:col-span-5 p-6 lg:p-8 lg:border-r border-inherit">
-                                <p className={`text-[10px] font-black uppercase tracking-[0.25em] mb-2 ${p.palette.stat}`}>{p.label}</p>
-                                <h3 className="text-xl md:text-2xl font-black text-foreground mb-3 leading-tight">{p.title}</h3>
-                                <p className="text-sm text-muted-foreground leading-relaxed">{p.body}</p>
-                            </div>
+                                {/* Title */}
+                                <h3 className="text-2xl font-black tracking-tight mb-1">{pillar.title}</h3>
+                                <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">{pillar.subtitle}</p>
 
-                            {/* Right — checklist */}
-                            <div className="lg:col-span-4 p-6 lg:p-8 lg:border-r border-inherit flex flex-col justify-center">
-                                <ul className="space-y-3">
-                                    {p.points.map((point, j) => {
-                                        const Icon = p.pointIcons[j];
-                                        return (
-                                            <li key={j} className="flex items-center gap-3 text-sm font-medium text-foreground">
-                                                <CheckCircle2 className={`h-4 w-4 shrink-0 ${p.palette.stat}`} />
-                                                {point}
-                                            </li>
-                                        );
-                                    })}
+                                {/* Description */}
+                                <p className="text-muted-foreground leading-relaxed mb-6 text-sm">{pillar.description}</p>
+
+                                {/* Highlights */}
+                                <ul className="space-y-2.5">
+                                    {pillar.highlights.map((h, j) => (
+                                        <li key={j} className="flex items-center gap-3 text-sm font-medium">
+                                            <div className={`w-6 h-6 rounded-lg border flex items-center justify-center shrink-0 ${pillar.iconBg}`}>
+                                                <h.icon className="h-3.5 w-3.5" />
+                                            </div>
+                                            {h.text}
+                                        </li>
+                                    ))}
                                 </ul>
-                            </div>
-
-                            {/* Far right — stat */}
-                            <div className="lg:col-span-2 p-6 lg:p-8 flex flex-col items-center justify-center text-center">
-                                <p className={`text-4xl font-black ${p.palette.stat}`}>{p.stat}</p>
-                                <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mt-1">{p.statLabel}</p>
                             </div>
                         </motion.div>
                     ))}
