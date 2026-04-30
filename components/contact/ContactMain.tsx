@@ -5,23 +5,30 @@ import ContactForm from "./ContactForm";
 
 export default function ContactMain() {
     return (
-        <section className="pb-24 px-4">
+        <section
+            className="pb-16 md:pb-24 px-4 sm:px-6"
+            aria-label="Contact form and communication channels"
+        >
             <div className="mx-auto max-w-7xl">
-                <div className="grid lg:grid-cols-12 gap-8 items-center">
-                    {/* Details - Left Side (4 Cols) */}
-                    <div className="lg:col-span-4 space-y-6">
-                        <ContactDetails />
-                    </div>
+                {/* Get in Touch Section — Full Width Vertical */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
+                    className="mb-16 md:mb-24"
+                >
+                    <ContactDetails />
+                </motion.div>
 
-                    {/* Form - Right Side (8 Cols) */}
-                    <motion.div
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        className="lg:col-span-8 shadow-2xl shadow-primary/5  bg-card/50 backdrop-blur-sm"
-                    >
-                        <ContactForm />
-                    </motion.div>
-                </div>
+                {/* Contact Form Section — Full Width */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.2 }}
+                    id="contact-form-section"
+                >
+                    <ContactForm />
+                </motion.div>
             </div>
         </section>
     );
