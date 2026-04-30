@@ -13,8 +13,8 @@ const actions = [
         bg: "bg-blue-500",
         shadow: "shadow-blue-500/40",
         // arc position: top-left
-        angle: -100,
-        distance: 68,
+        angle: 135,
+        distance: 80,
     },
     {
         icon: Mail,
@@ -24,8 +24,8 @@ const actions = [
         bg: "bg-violet-500",
         shadow: "shadow-violet-500/40",
         // arc position: top
-        angle: -60,
-        distance: 68,
+        angle: 225,
+        distance: 80,
     },
     {
         icon: MessageCircle,
@@ -35,8 +35,8 @@ const actions = [
         bg: "bg-green-500",
         shadow: "shadow-green-500/40",
         // arc position: top-right
-        angle: -20,
-        distance: 68,
+        angle: 180,
+        distance: 100,
     },
 ];
 
@@ -54,7 +54,7 @@ export default function FloatingFAB() {
 
     return (
         // Desktop only — mobile uses QuickConnectBar
-        <div className="hidden md:block fixed bottom-6 right-6 z-50" aria-label="Quick contact speed dial">
+        <div className={`hidden md:block fixed  ${open ? "bottom-18 right-16" : "bottom-6  right-6"} z-50 transition-all duration-500`} aria-label="Quick contact speed dial">
             {/* Mini action buttons — fan out in arc */}
             <AnimatePresence>
                 {open && actions.map((action, i) => {
